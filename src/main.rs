@@ -9,13 +9,8 @@ fn _problem_1() {
     println!("result = {}", sum);
 }
 
-fn cons13product(input : &[u32]) -> u64 {
-
-    let mut prod = 1 as u64;
-    for i in 0..13 {
-        prod *= input[i] as u64;
-    }
-    return prod;
+fn product(input : &[u32]) -> u64 {
+    return input.iter().fold( 1 as u64, |x,y|  x * *y as u64 );
 }
 
 fn problem_8() {
@@ -47,7 +42,7 @@ fn problem_8() {
 
     let mut max_prod = 0;
     for i in 0..series.len() - 13 {
-        let cur_prod = cons13product(series.get(i..i+13).unwrap());
+        let cur_prod = product(series.get(i..i+13).unwrap());
         if cur_prod > max_prod {
             max_prod = cur_prod;
         }

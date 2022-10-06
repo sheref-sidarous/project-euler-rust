@@ -1,12 +1,13 @@
 
 // mod problem_8;
-mod problem_11;
+mod problem_12;
+use problem_12::solution;
 
 
 
 
 
 fn main() {
-    problem_11::solution();
+    solution();
 
 }

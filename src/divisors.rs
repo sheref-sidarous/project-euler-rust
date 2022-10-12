@@ -1,5 +1,7 @@
 
 use crate::primes::Primes;
+use once_cell::sync::Lazy;
+use std::collections::HashMap;
 
 // loop
 pub fn _decompose_into_primes(input : u64) -> Vec<u64> {
@@ -27,6 +29,15 @@ pub fn decompose_into_primes(input : u64) -> Vec<u64> {
         return Vec::new();
     }
 
+    static mut SEEN_BEFORE : Lazy<HashMap<u64, Vec<u64>>> = Lazy::new(|| { HashMap::new() });
+
+    unsafe {
+        if let Some(value) = SEEN_BEFORE.get(&input) {
+            return value.clone();
+        }
+    }
+
+
     let mut decomposed_primes = Vec::new();
     let prime_list = Primes::new();
     for prime in prime_list {
@@ -36,7 +47,10 @@ pub fn decompose_into_primes(input : u64) -> Vec<u64> {
             break;
         }
     }
-    
+
+    unsafe {
+        SEEN_BEFORE.insert(input, decomposed_primes.clone());
+    }
 
     return decomposed_primes;
 }

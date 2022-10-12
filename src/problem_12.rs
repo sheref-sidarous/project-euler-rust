@@ -27,6 +27,10 @@ fn triangle_number(order : u32) -> u64 {
     result
 }
 
+fn find_divisors(number : u32) -> [u32] {
+    
+}
+
 pub fn solution() {
     println!("{}", triangle_number(7))
 }

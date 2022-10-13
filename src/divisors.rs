@@ -3,13 +3,11 @@ use crate::primes::Primes;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
-#[derive(Debug)]
-pub struct PrimeFactor {
-    prime : u64,
-    power : u64,
-}
-// loop
-pub fn prime_facorization(input : u64) -> HashMap<u64, u64> {
+
+type Power = u64;
+type Prime = u64;
+
+pub fn _prime_facorization(input : u64) -> HashMap<Prime, Power> {
     
     let mut reminder = input;
     let mut facorized_primes = HashMap::new();
@@ -41,13 +39,17 @@ pub fn number_of_divisors(input : u64) -> u64 {
 }
 
 // recursive 
-pub fn _decompose_into_primes(input : u64) -> Vec<u64> {
+pub fn prime_facorization(input : u64) -> HashMap<Prime, Power> {
 
     if input == 1 {
-        return Vec::new();
+        return HashMap::new();
     }
 
-    static mut SEEN_BEFORE : Lazy<HashMap<u64, Vec<u64>>> = Lazy::new(|| { HashMap::new() });
+    static mut SEEN_BEFORE : Lazy<
+                                    HashMap<u64, // function input
+                                        HashMap<Prime, Power> // function output
+                                    >
+                             > = Lazy::new(|| { HashMap::new() });
 
     unsafe {
         if let Some(value) = SEEN_BEFORE.get(&input) {
@@ -55,12 +57,18 @@ pub fn _decompose_into_primes(input : u64) -> Vec<u64> {
         }
     }
 
-    let mut decomposed_primes = Vec::new();
     let prime_list = Primes::new();
+    let mut decomposed_primes = HashMap::new();
     for prime in prime_list {
         if input % prime == 0 {
-            decomposed_primes = _decompose_into_primes(input / prime);
-            decomposed_primes.push(prime);
+            decomposed_primes = prime_facorization(input / prime);
+            let new_power = if let Some(value) = decomposed_primes.get(&prime) {
+                *value + 1
+            } else {
+                1
+            };
+            decomposed_primes.insert(prime, new_power);
+            
             break;
         }
     }

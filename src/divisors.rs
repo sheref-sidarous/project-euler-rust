@@ -34,10 +34,8 @@ pub fn prime_facorization(input : u64) -> Vec<PrimeFactor> {
 
 pub fn number_of_divisors(input : u64) -> u64 {
     let prime_factors = prime_facorization(input);
-    let mut no_of_divisors = 1;
-    for factor in prime_factors {
-        no_of_divisors *= factor.power + 1;
-    }
+    let no_of_divisors = prime_factors.iter().fold(1, 
+        | acc, factor | {  acc * (factor.power + 1)} );
 
     return no_of_divisors;
 }

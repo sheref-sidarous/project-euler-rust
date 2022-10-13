@@ -9,10 +9,10 @@ pub struct PrimeFactor {
     power : u64,
 }
 // loop
-pub fn prime_facorization(input : u64) -> Vec<PrimeFactor> {
+pub fn prime_facorization(input : u64) -> HashMap<u64, u64> {
     
     let mut reminder = input;
-    let mut facorized_primes = Vec::new();
+    let mut facorized_primes = HashMap::new();
     
     let prime_list = Primes::new();
     for prime in prime_list {
@@ -22,7 +22,7 @@ pub fn prime_facorization(input : u64) -> Vec<PrimeFactor> {
             power += 1;
         }
         if power > 0 {
-            facorized_primes.push(PrimeFactor { prime: prime, power: power });
+            facorized_primes.insert(prime, power);
         }
         if reminder == 1 {
             break;
@@ -35,7 +35,7 @@ pub fn prime_facorization(input : u64) -> Vec<PrimeFactor> {
 pub fn number_of_divisors(input : u64) -> u64 {
     let prime_factors = prime_facorization(input);
     let no_of_divisors = prime_factors.iter().fold(1, 
-        | acc, factor | {  acc * (factor.power + 1)} );
+        | acc, factor | {  acc * (factor.1 + 1)} );
 
     return no_of_divisors;
 }

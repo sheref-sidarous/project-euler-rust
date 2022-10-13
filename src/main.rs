@@ -24,8 +24,8 @@ fn _list_first_few_primes() {
 
 fn main() {
     
-    println!("{:?}", divisors::decompose_into_primes(10240));
-    
+    println!("{:?}", divisors::prime_facorization(8*5));
+    println!("{:?}", divisors::number_of_divisors(8*5));
 
 
 

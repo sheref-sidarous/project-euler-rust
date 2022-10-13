@@ -3,27 +3,47 @@ use crate::primes::Primes;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
+#[derive(Debug)]
+pub struct PrimeFactor {
+    prime : u64,
+    power : u64,
+}
 // loop
-pub fn _decompose_into_primes(input : u64) -> Vec<u64> {
+pub fn prime_facorization(input : u64) -> Vec<PrimeFactor> {
     
     let mut reminder = input;
-    let mut decomposed_primes = Vec::new();
-    while reminder != 1 {
-        let prime_list = Primes::new();
-        for prime in prime_list {
-            if reminder % prime == 0 {
-                reminder = reminder / prime;
-                decomposed_primes.push(prime);
-                break;
-            }
+    let mut facorized_primes = Vec::new();
+    
+    let prime_list = Primes::new();
+    for prime in prime_list {
+        let mut power = 0;
+        while reminder % prime == 0 {
+            reminder = reminder / prime;
+            power += 1;
+        }
+        if power > 0 {
+            facorized_primes.push(PrimeFactor { prime: prime, power: power });
+        }
+        if reminder == 1 {
+            break;
         }
     }
 
-    return decomposed_primes;
+    return facorized_primes;
+}
+
+pub fn number_of_divisors(input : u64) -> u64 {
+    let prime_factors = prime_facorization(input);
+    let mut no_of_divisors = 1;
+    for factor in prime_factors {
+        no_of_divisors *= factor.power + 1;
+    }
+
+    return no_of_divisors;
 }
 
 // recursive 
-pub fn decompose_into_primes(input : u64) -> Vec<u64> {
+pub fn _decompose_into_primes(input : u64) -> Vec<u64> {
 
     if input == 1 {
         return Vec::new();
@@ -37,12 +57,11 @@ pub fn decompose_into_primes(input : u64) -> Vec<u64> {
         }
     }
 
-
     let mut decomposed_primes = Vec::new();
     let prime_list = Primes::new();
     for prime in prime_list {
         if input % prime == 0 {
-            decomposed_primes = decompose_into_primes(input / prime);                
+            decomposed_primes = _decompose_into_primes(input / prime);
             decomposed_primes.push(prime);
             break;
         }

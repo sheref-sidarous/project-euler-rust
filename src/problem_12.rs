@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use once_cell::sync::Lazy;
 
+use crate::divisors;
+
 fn triangle_number_core(order : u32) -> u64 {
     if order == 1 {
         1
@@ -27,10 +29,18 @@ fn triangle_number(order : u32) -> u64 {
     result
 }
 
-fn find_divisors(number : u32) -> [u32] {
-    
-}
 
 pub fn solution() {
-    println!("{}", triangle_number(7))
+
+    let mut progress = 1;
+    let answer = loop {
+        let n = triangle_number(progress);
+        let no_of_divisors = divisors::number_of_divisors(n);
+        if no_of_divisors >= 500 {
+            break n;
+        }
+        progress += 1;
+    };
+
+    println!("{}", answer);
 }

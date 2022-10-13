@@ -1,6 +1,6 @@
 
 // mod problem_8;
-//mod problem_12;
+mod problem_12;
 //use problem_12::solution;
 
 
@@ -24,8 +24,9 @@ fn _list_first_few_primes() {
 
 fn main() {
     
-    println!("{:?}", divisors::prime_facorization(8*5));
-    println!("{:?}", divisors::number_of_divisors(8*5));
+    //println!("{:?}", divisors::prime_facorization(11));
+    //println!("{:?}", divisors::number_of_divisors(11));
+    problem_12::solution();
 
 
 

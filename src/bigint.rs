@@ -1,27 +1,60 @@
 use std::vec::Vec;
 use std::ops::{Add, Sub, Mul, Div};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct BigInt {
-    internal_rep : Vec<i64>,
+    internal_rep : Vec<u64>,
 }
 
 impl BigInt {
     pub fn new<T>(initial_value : T) -> Self 
-    where T : Into<i64>
+    where T : Into<u64>
     {
         BigInt {
             internal_rep : vec!(initial_value.into())
         }
     }
+
+    fn inner_multiply(&self, multiplier : u64) -> BigInt {
+        
+        let mut acc_result = Vec::new();
+        let mut remainder = 0;
+
+        for item in &self.internal_rep {
+            //let mut new_carry = false;
+            let mul_result = *item as u128 * multiplier as u128;
+            let result_lower_half = (mul_result & 0xFFFFFFFFFFFFFFFFu128) as u64;
+            let result_upper_half = (mul_result & 0xFFFFFFFFFFFFFFFF0000000000000000u128) as u64;
+            let (result, new_carry) = result_lower_half.overflowing_add(remainder);
+            remainder = result_upper_half;
+            if new_carry {
+                remainder += 1;
+            }
+            acc_result.push(result);
+        }
+        if remainder > 0 {
+            acc_result.push(remainder);
+        }
+
+        BigInt { internal_rep: acc_result }
+    }
 }
 
-impl From<i64> for BigInt {
-    fn from(value: i64) -> Self {
+impl From<u64> for BigInt {
+    fn from(value: u64) -> Self {
         BigInt {
             internal_rep : vec!(value)
         }
     }
+}
+fn _full_adder(val1 : u64, val2: u64, carry : bool) -> (u64, bool) {
+    let  (mut result, mut carry_out) = val1.overflowing_add(val2);
+    if carry {
+        let mut temp_carry = false;
+        (result, temp_carry) = result.overflowing_add(1);
+        carry_out |= temp_carry;
+    }
+    (result, carry_out)
 }
 
 impl Add for BigInt {
@@ -50,5 +83,24 @@ impl Add for BigInt {
 
         BigInt { internal_rep: result }
 
+    }
+}
+
+impl Mul for BigInt {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut result : BigInt = 0.into();
+        let mut order = 0;
+        for item in rhs.internal_rep {
+            let mut x = self.inner_multiply(item);
+            for _ in 0..order {
+                x.internal_rep.insert(0, 0);
+            }
+            result = result + x;
+            order += 1;
+        }
+
+        return result;
     }
 }

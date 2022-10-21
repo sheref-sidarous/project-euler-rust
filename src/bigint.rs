@@ -19,7 +19,7 @@ impl BigInt {
         }
     }
 
-    fn simple_multiply(&self, multiplier : u64) -> BigInt {
+    pub fn simple_multiply(&self, multiplier : u64) -> BigInt {
         
         let mut acc_result = Vec::new();
         let mut remainder = 0;
@@ -28,7 +28,7 @@ impl BigInt {
             //let mut new_carry = false;
             let mul_result = *item as u128 * multiplier as u128;
             let result_lower_half = (mul_result & 0xFFFFFFFFFFFFFFFFu128) as u64;
-            let result_upper_half = (mul_result & 0xFFFFFFFFFFFFFFFF0000000000000000u128) as u64;
+            let result_upper_half = ((mul_result & 0xFFFFFFFFFFFFFFFF0000000000000000u128) >> 64) as u64;
             let (result, new_carry) = result_lower_half.overflowing_add(remainder);
             remainder = result_upper_half;
             if new_carry {
@@ -52,8 +52,9 @@ impl BigInt {
             let devidend = (*item as u128) | (last_op_remainder as u128) << 64;
             let quotant = devidend / divisor as u128;
             last_op_remainder = devidend % divisor as u128;
-            result_acc.insert(0, quotant as u64);
-
+            if result_acc.len() != 0 || quotant != 0 {
+                result_acc.insert(0, quotant as u64);
+            }
         }
 
         (BigInt { internal_rep: result_acc }, last_op_remainder as u64)

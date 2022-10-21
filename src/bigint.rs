@@ -1,5 +1,6 @@
 use std::vec::Vec;
 use std::ops::{Add, Sub, Mul, Div};
+use crate::indexed_iter::IndexedIter;
 
 #[derive(Clone, Debug)]
 pub struct BigInt {
@@ -99,8 +100,12 @@ impl BigInt {
             int_parts.push(remainder);
         }
 
-        for part in int_parts.iter().rev() {
-            output.push_str(format!("{:03}", *part).as_str());
+        for (part, index) in IndexedIter::new(int_parts.iter().rev()) {
+            if index == int_parts.len() -1 {
+                output.push_str(format!("{:03}", *part).as_str());
+            } else {
+                output.push_str(format!("{}", *part).as_str());
+            }
         }
 
         output

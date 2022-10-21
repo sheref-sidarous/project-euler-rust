@@ -61,3 +61,18 @@ impl Iterator for Primes<'_> {
     }
 }
 
+fn _list_first_few_primes() {
+    let my_prime_list = primes::Primes::new();
+
+    let mut i = 0;
+
+    for prime in my_prime_list {
+        println!("{}", prime);
+        i += 1;
+        if i > 10 {
+            break;
+        }
+    }
+
+}
+

@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 once_cell = "1.15.0"
+memoization-macro = { path = "../memoization-macro"}

@@ -1,5 +1,5 @@
 use std::vec::Vec;
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Mul, Shl};
 use crate::indexed_iter::IndexedIter;
 
 #[derive(Clone, Debug)]
@@ -176,6 +176,42 @@ impl Mul for &BigInt {
     }
 }
 
+impl Shl<u64> for &BigInt {
+    type Output = BigInt;
+
+    fn shl(self, rhs: u64) -> Self::Output {
+        let mut result = Vec::new();
+        let word_shifts = rhs / 64;
+        let bit_shifts = rhs % 64;
+
+        for _ in 0..word_shifts {
+            result.push(0);
+        }
+
+        let lower_bitmask = (1u64 << (64 - bit_shifts)) - 1;
+        let higher_bitmask = !lower_bitmask;
+
+        let mut prev_higher_bits = 0;
+
+        for item in &self.internal_rep {
+            let new_value = item << bit_shifts | prev_higher_bits;
+            result.push(new_value);
+
+            prev_higher_bits = (item & higher_bitmask) >> (64 - bit_shifts);
+        }
+
+        if prev_higher_bits != 0 {
+            result.push(prev_higher_bits);
+        }
+
+        BigInt {
+            internal_rep : result,
+        }
+        
+    }
+
+}
+
 /* TODO: Division, some promising resources :
 https://ridiculousfish.com/blog/posts/labor-of-division-episode-iv.html
 https://surface.syr.edu/cgi/viewcontent.cgi?article=1162&context=eecs_techreports
@@ -183,3 +219,11 @@ https://skanthak.homepage.t-online.de/division.html
 https://en.wikipedia.org/wiki/Division_algorithm
 
  */
+
+ #[test]
+ fn test_shift() {
+    let x : BigInt = 0x1122334455667788.into();
+    let y = &x << 1000u64;
+
+    assert!(y.internal_rep == vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x6677880000000000, 0x1122334455])
+ }

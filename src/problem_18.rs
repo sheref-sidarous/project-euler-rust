@@ -89,14 +89,16 @@ fn build_triangle(path : &str) -> Triangle {
 
 }
 
-
-pub fn solution() {
-    let mut triangle = build_triangle("res/problem_18.txt");
+pub fn algorithm (input_path : &str) {
+    let mut triangle = build_triangle(input_path);
     println!("{:?}", triangle);
 
     while triangle.number_of_rows() > 1 {
         triangle = triangle.collapse_last_row();
         println!("{:?}", triangle);
     }
+}
 
+pub fn solution() {
+    algorithm("res/problem_18.txt");
 }

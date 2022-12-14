@@ -1,8 +1,6 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 
-use crate::indexed_iter::IndexedIter;
-
 struct TriangleCell<'a> {
     row: usize,
     col: usize,
@@ -36,7 +34,7 @@ impl Triangle {
         }
 
         // n - 2 rows are just as is
-        for (row, index) in IndexedIter::new(self.0.into_iter()) {
+        for (index, row) in self.0.into_iter().enumerate() {
             if index < n - 2 {
                 new_rows.push(row);
             } else  {
